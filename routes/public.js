@@ -70,7 +70,7 @@ router.get("/cart/:id", async (req, res) => {
     );
     console.log("get cart");
     if (cartResult.rows.length > 0) {
-      const itemsResult = await pool.query(
+      const itemsResult = await poolNeon.query(
         `SELECT p.* 
          FROM cart_itens ci 
          JOIN products p ON ci.product_id = p.id 
