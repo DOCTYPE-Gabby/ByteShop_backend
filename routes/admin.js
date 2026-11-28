@@ -42,6 +42,7 @@ router.post("/admin", upload.single("image"), async (req, res) => {
     console.log(req.body);
     const { inpNomeProduto, inpPreco, inpDesCurta, inpDesLonga } = req.body;
     const precoNum = Number(inpPreco);
+    console.log('FILE PATH -----------> O QUE VEM DO FRONT ---------<', filePath)
     const filePath = req.file ? req.file.secure_url || req.file.url || req.file.path : null;
     const result = await pool.query(
       `INSERT INTO products(product_name, product_description, price, long_description, img)
