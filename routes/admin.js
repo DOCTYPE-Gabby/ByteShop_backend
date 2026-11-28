@@ -25,19 +25,24 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage });
 
+function uploadSinglePic(req, res, fieldName) {
+  return new Promise ((resolve, reject)=> {
+    upload.single(fieldName)(req, res, (err)=> {
+      if (err) return reject(err);
+      resolve();
+    })
+  })
+}
+
+
+
 router.post("/admin", upload.single("image"), async (req, res) => {
   try {
+    await uploadSinglePic(req, res, "image");
     console.log(req.body);
     const { inpNomeProduto, inpPreco, inpDesCurta, inpDesLonga } = req.body;
     const precoNum = Number(inpPreco);
-
-  
-    const filePath = req.file ? req.file.url : null;
-    console.log("URL da imagem:", filePath);
-
-   console.log("ARQUIVO:", req.file);
-console.log("PATH:", req.file?.path);
-console.log("URL:", req.file?.url);
+    const filePath = req.file ? req.file.secure_url || req.file.url || req.file.path : null;
     const result = await pool.query(
       `INSERT INTO products(product_name, product_description, price, long_description, img)
              VALUES($1, $2, $3, $4, $5) RETURNING *`,
@@ -50,4 +55,6 @@ console.log("URL:", req.file?.url);
     res.status(500).json({ error: "erro ao salvar produto" });
   }
 });
+
+
 export default router;
